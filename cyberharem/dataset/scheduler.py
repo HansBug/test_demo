@@ -150,5 +150,5 @@ _DEFAULT_CONCURRENCY = 18
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
     logging.info(f'Concurrency: {concurrency!r}')
-    s = Scheduler('arknights', concurrent=concurrency)
+    s = Scheduler('genshin', concurrent=concurrency)
     s.go_up()
