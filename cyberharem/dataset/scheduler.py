@@ -132,7 +132,7 @@ class Scheduler:
             task: Task = not_started[i]
             logging.info(f'Scheduling for {task!r} ...')
             client.create_workflow_run(
-                'cusrunner/cyberharem',
+                'HansBug/test_demo',
                 'Test Script',
                 data={
                     'character_name': task.character_name,
@@ -145,7 +145,7 @@ class Scheduler:
             i += 1
 
 
-_DEFAULT_CONCURRENCY = 5
+_DEFAULT_CONCURRENCY = 18
 
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
