@@ -145,7 +145,7 @@ class Scheduler:
             i += 1
 
 
-_DEFAULT_CONCURRENCY = 12
+_DEFAULT_CONCURRENCY = 8
 
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
