@@ -145,10 +145,10 @@ class Scheduler:
             i += 1
 
 
-_DEFAULT_CONCURRENCY = 6
+_DEFAULT_CONCURRENCY = 12
 
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
     logging.info(f'Concurrency: {concurrency!r}')
-    s = Scheduler('genshin', concurrent=concurrency)
+    s = Scheduler('bluearchive', concurrent=concurrency)
     s.go_up()
