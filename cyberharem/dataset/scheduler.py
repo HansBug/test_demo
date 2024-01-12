@@ -70,7 +70,22 @@ class Scheduler:
             for ch in sorted(self.game_cls.all(), key=lambda x: (-_get_pixiv_posts(x), x))
             if ch.gender == 'female' and not ch.is_extra
         ]
-        return [Task(ch) for ch in all_girls]
+        tasks, repo_id_set = [], set()
+        for ch in all_girls:
+            task = Task(ch)
+            try:
+                _repo_id = task.repo_id
+            except (ValueError,) as err:
+                warnings.warn(f'Error: {err!r} for task {task!r}, skipped.')
+                continue
+
+            if _repo_id in repo_id_set:
+                continue
+
+            tasks.append(task)
+            repo_id_set.add(_repo_id)
+
+        return tasks
 
     def get_task_status(self, task: Task) -> TaskStatusTyping:
         hf_client = get_hf_client()
@@ -150,5 +165,5 @@ _DEFAULT_CONCURRENCY = 6
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
     logging.info(f'Concurrency: {concurrency!r}')
-    s = Scheduler('bluearchive', concurrent=concurrency)
+    s = Scheduler('azurlane', concurrent=concurrency)
     s.go_up()
