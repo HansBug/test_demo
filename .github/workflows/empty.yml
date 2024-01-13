@@ -1,4 +1,4 @@
-name: Test Script
+name: Remove Empty Dataset
 
 permissions:
   contents: write
