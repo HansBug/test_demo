@@ -18,7 +18,7 @@ from waifuc.action import NoMonochromeAction, FilterSimilarAction, \
     TaggingAction, PersonSplitAction, FaceCountAction, CCIPAction, ModeConvertAction, ClassFilterAction, \
     FileOrderAction, RatingFilterAction, BaseAction, RandomFilenameAction, PaddingAlignAction, ThreeStageSplitAction, \
     AlignMinSizeAction, MinSizeFilterAction, FilterAction, MinAreaFilterAction, SafetyAction, TagDropAction, \
-    TagOverlapDropAction
+    TagOverlapDropAction, AlignMaxAreaAction
 from waifuc.export import SaveExporter, TextualInversionExporter
 from waifuc.model import ImageItem
 from waifuc.source import GcharAutoSource, BaseDataSource, LocalSource
@@ -55,7 +55,10 @@ def get_main_source(source, no_r18: bool = False, bg_color: str = 'white',
                     no_monochrome_check: bool = False, drop_multi: bool = False, skip: bool = False) -> BaseDataSource:
     source: BaseDataSource = get_source(source, drop_multi)
     if not skip:
-        actions = [ModeConvertAction('RGB', bg_color)]
+        actions = [
+            AlignMaxAreaAction(4500),  # IMPORTANT!!! crawler will crash because of large image if remove this
+            ModeConvertAction('RGB', bg_color),
+        ]
         if not no_monochrome_check:
             actions.append(NoMonochromeAction())  # no monochrome, greyscale or sketch
         actions.append(SafetyAction())
@@ -219,8 +222,10 @@ def crawl_dataset_to_huggingface(
             if img_count < min_images:
                 logging.warn(f'Only {plural_word(img_count, "image")} found for {name} which is too few, '
                              f'skip post-processing and uploading.')
-                if repo_new_created and hf_client.repo_exists(repo_id=repository, repo_type=repo_type):
-                    hf_client.delete_repo(repo_id=repository, repo_type=repo_type)
+                # if repo_new_created and hf_client.repo_exists(repo_id=repository, repo_type=repo_type):
+                #     hf_client.delete_repo(repo_id=repository, repo_type=repo_type)
+                hf_fs.write_text(f'datasets/{repository}/.git-empty', 'empty')
+                hf_fs.delete(f'datasets/{repository}/.git-ongoing')
                 return
 
             ch_core_tags, clu_samples = get_character_tags_info(LocalSource(origin_dir))

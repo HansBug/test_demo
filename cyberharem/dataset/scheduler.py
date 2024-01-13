@@ -93,6 +93,8 @@ class Scheduler:
 
         if not hf_client.repo_exists(repo_id=task.repo_id, repo_type='dataset'):
             return 'not_started'
+        if hf_fs.exists(f'datasets/{task.repo_id}/.git-empty'):
+            return 'completed'
         if hf_fs.exists(f'datasets/{task.repo_id}/.git-ongoing'):
             return 'on_going'
 

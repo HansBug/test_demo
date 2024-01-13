@@ -1,4 +1,4 @@
-name: Scheduler
+name: Test Script
 
 permissions:
   contents: write
@@ -7,12 +7,13 @@ on:
   #  push:
   workflow_dispatch:
     inputs:
-      concurrency:
-        description: 'Concurrency'
-        type: number
-        default: 6
-  schedule:
-    - cron: '*/30 * * * *'
+      game_name:
+        description: 'Game Name'
+        required: true
+#  schedule:
+#    - cron: '30 16 * * *'
+#    - cron: '30 8 * * *'
+#    - cron: '30 0 * * *'
 
 jobs:
   bangumibase_sync:
@@ -67,16 +68,13 @@ jobs:
           pip --version
           pip list
           tree .
-      - name: Check if is scheduled when is workflow dispatched
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        shell: bash
-        run: |
-          echo "CH_CONCURRENCY=${{ github.event.inputs.concurrency }}" >> $GITHUB_ENV
       - name: Run Crawler
         shell: bash
         env:
           CI: 'true'
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          CH_GAME: ${{ github.event.inputs.game_name }}
+          CH_SAFE: '1'
         run: |
-          python -m cyberharem.dataset.scheduler
+          python -m cyberharem.dataset.remove_empty
