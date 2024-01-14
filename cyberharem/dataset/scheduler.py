@@ -52,10 +52,11 @@ TaskStatusTyping = Literal['not_started', 'on_going', 'completed']
 
 
 class Scheduler:
-    def __init__(self, game_name: str, concurrent: int = 6):
+    def __init__(self, game_name: str, concurrent: int = 6, max_new_create: int = 3):
         self.game_name = game_name
         self.game_cls = get_character_class(self.game_name)
         self.concurrent = concurrent
+        self.max_new_create = max_new_create
 
     def list_task_pool(self):
         def _get_pixiv_posts(ch_: Character):
@@ -144,28 +145,36 @@ class Scheduler:
                      f'{plural_word(len(not_started), "not started task")}.')
 
         x = len(on_goings)
+        hf_client = get_hf_client()
         i = 0
+        new_create_cnt = 0
         while x < self.concurrent and i < len(not_started):
             task: Task = not_started[i]
-            logging.info(f'Scheduling for {task!r} ...')
-            client.create_workflow_run(
-                'HansBug/test_demo',
-                'Test Script',
-                data={
-                    'character_name': task.character_name,
-                    'game_name': task.game_name,
-                    'drop_multi': False,
-                }
-            )
+            _repo_exists = hf_client.repo_exists(repo_id=task.repo_id, repo_type='dataset')
+            if _repo_exists or new_create_cnt < self.max_new_create:
+                logging.info(f'Scheduling for {task!r} ...')
+                client.create_workflow_run(
+                    'deepghs/cyberharem',
+                    'Test Script',
+                    data={
+                        'character_name': task.character_name,
+                        'game_name': task.game_name,
+                        'drop_multi': False,
+                    }
+                )
 
-            x += 1
+                x += 1
+                if not _repo_exists:
+                    new_create_cnt += 1
+
             i += 1
 
 
 _DEFAULT_CONCURRENCY = 12
+_MAX_NEW_CREATE = 3
 
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
     logging.info(f'Concurrency: {concurrency!r}')
-    s = Scheduler('azurlane', concurrent=concurrency)
+    s = Scheduler('azurlane', concurrent=concurrency, max_new_create=_MAX_NEW_CREATE)
     s.go_up()
