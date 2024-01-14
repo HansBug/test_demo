@@ -32,7 +32,7 @@ class Task:
 
     @property
     def character_name(self):
-        return str(self.ch.enname)
+        return str(self.ch.enname or self.ch.jpname or self.ch.cnname or '')
 
     @property
     def game_name(self):
@@ -151,7 +151,7 @@ class Scheduler:
         while x < self.concurrent and i < len(not_started):
             task: Task = not_started[i]
             _repo_exists = hf_client.repo_exists(repo_id=task.repo_id, repo_type='dataset')
-            if _repo_exists or new_create_cnt < self.max_new_create:
+            if task.character_name and (_repo_exists or new_create_cnt < self.max_new_create):
                 logging.info(f'Scheduling for {task!r} ...')
                 client.create_workflow_run(
                     'deepghs/cyberharem',
