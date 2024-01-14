@@ -154,7 +154,7 @@ class Scheduler:
             if task.character_name and (_repo_exists or new_create_cnt < self.max_new_create):
                 logging.info(f'Scheduling for {task!r} ...')
                 client.create_workflow_run(
-                    'deepghs/cyberharem',
+                    'HansBug/test_demo',
                     'Test Script',
                     data={
                         'character_name': task.character_name,
