@@ -176,5 +176,5 @@ _MAX_NEW_CREATE = 3
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
     logging.info(f'Concurrency: {concurrency!r}')
-    s = Scheduler('azurlane', concurrent=concurrency, max_new_create=_MAX_NEW_CREATE)
+    s = Scheduler('kantaicollection', concurrent=concurrency, max_new_create=_MAX_NEW_CREATE)
     s.go_up()
