@@ -1,7 +1,7 @@
 import json
 import os
 import warnings
-from typing import Literal
+from typing import Literal, Union, List
 
 from ditk import logging
 from gchar.games import get_character_class
@@ -48,29 +48,39 @@ class Task:
         return f'<Task character: {self.ch!r}>'
 
 
+def _get_pixiv_posts(ch_: Character):
+    ret = get_pixiv_posts(ch_)
+    if ret:
+        return ret[0]
+    else:
+        return 0
+
+
+def _get_character_list_from_game_cls(game_cls):
+    return [
+        ch
+        for ch in sorted(game_cls.all(), key=lambda x: (-_get_pixiv_posts(x), x))
+        if ch.gender == 'female' and not ch.is_extra
+    ]
+
+
 TaskStatusTyping = Literal['not_started', 'on_going', 'completed']
 
 
 class Scheduler:
-    def __init__(self, game_name: str, concurrent: int = 6, max_new_create: int = 3):
-        self.game_name = game_name
-        self.game_cls = get_character_class(self.game_name)
+    def __init__(self, game_name: Union[str, List[str]], concurrent: int = 6, max_new_create: int = 3):
+        self.game_clses = [
+            get_character_class(game_name)
+            for game_name in (game_name if isinstance(game_name, list) else [game_name])
+        ]
         self.concurrent = concurrent
         self.max_new_create = max_new_create
 
     def list_task_pool(self):
-        def _get_pixiv_posts(ch_: Character):
-            ret = get_pixiv_posts(ch_)
-            if ret:
-                return ret[0]
-            else:
-                return 0
+        all_girls = []
+        for game_cls in self.game_clses:
+            all_girls.extend(_get_character_list_from_game_cls(game_cls))
 
-        all_girls = [
-            ch
-            for ch in sorted(self.game_cls.all(), key=lambda x: (-_get_pixiv_posts(x), x))
-            if ch.gender == 'female' and not ch.is_extra
-        ]
         tasks, repo_id_set = [], set()
         for ch in all_girls:
             task = Task(ch)
@@ -171,10 +181,15 @@ class Scheduler:
 
 
 _DEFAULT_CONCURRENCY = 12
-_MAX_NEW_CREATE = 3
+_MAX_NEW_CREATE = 4
+
+_ALL_GAMES = [
+    'pokemon',
+    'leagueoflegends',
+]
 
 if __name__ == '__main__':
     concurrency = int(os.environ.get('CH_CONCURRENCY') or _DEFAULT_CONCURRENCY)
     logging.info(f'Concurrency: {concurrency!r}')
-    s = Scheduler('kantaicollection', concurrent=concurrency, max_new_create=_MAX_NEW_CREATE)
+    s = Scheduler(_ALL_GAMES, concurrent=concurrency, max_new_create=_MAX_NEW_CREATE)
     s.go_up()
