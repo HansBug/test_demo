@@ -192,13 +192,13 @@ _ALL_GAMES = [
     # 'theidolmstershinycolors',
     # 'idolmastercinderellagirls',
 
-    'lovelive',
-    'lovelivenijigasakihighschoolidolclub',
-    'loveliveschoolidolfestivalallstars',
-    'lovelivesunshine',
-    'lovelivesuperstar',
+    # 'lovelive',
+    # 'lovelivenijigasakihighschoolidolclub',
+    # 'loveliveschoolidolfestivalallstars',
+    # 'lovelivesunshine',
+    # 'lovelivesuperstar',
 
-    'honkai3',
+    # 'honkai3',
     'fireemblem',
 ]
 
