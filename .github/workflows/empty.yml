@@ -7,8 +7,8 @@ on:
   #  push:
   workflow_dispatch:
     inputs:
-      game_name:
-        description: 'Game Name'
+      dataset_repo_pattern:
+        description: 'Dataset Repository Pattern (Wildcard)'
         required: true
 #  schedule:
 #    - cron: '30 16 * * *'
@@ -74,7 +74,7 @@ jobs:
           CI: 'true'
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          CH_GAME: ${{ github.event.inputs.game_name }}
+          CH_PATTERN: ${{ github.event.inputs.dataset_repo_pattern }}
           CH_SAFE: '1'
         run: |
           python -m cyberharem.dataset.remove_empty

@@ -45,7 +45,7 @@ class Task:
         return hash((self.ch,))
 
     def __repr__(self):
-        return f'<Task character: {self.ch!r}>'
+        return f'<Task character: {self.ch!r}, game: {self.ch.__class__.__game_name__!r}>'
 
 
 def _get_pixiv_posts(ch_: Character):
@@ -184,8 +184,22 @@ _DEFAULT_CONCURRENCY = 12
 _MAX_NEW_CREATE = 4
 
 _ALL_GAMES = [
-    'pokemon',
-    'leagueoflegends',
+    # 'bangdream',
+    # 'bangdreamdai2ki',
+    #
+    # 'theidolmster',
+    # 'theidolmstermillionlive',
+    # 'theidolmstershinycolors',
+    # 'idolmastercinderellagirls',
+
+    'lovelive',
+    'lovelivenijigasakihighschoolidolclub',
+    'loveliveschoolidolfestivalallstars',
+    'lovelivesunshine',
+    'lovelivesuperstar',
+
+    'honkai3',
+    'fireemblem',
 ]
 
 if __name__ == '__main__':

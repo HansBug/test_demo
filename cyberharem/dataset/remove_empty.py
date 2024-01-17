@@ -1,3 +1,4 @@
+import fnmatch
 import os
 
 from ditk import logging
@@ -10,13 +11,13 @@ logging.try_init_root(logging.INFO)
 if __name__ == '__main__':
     hf_client = get_hf_client()
     hf_fs = get_hf_fs()
-    ch_game = os.environ.get('CH_GAME') or ''
+    ch_pattern = os.environ.get('CH_PATTERN') or ''
     ch_dry = bool(os.environ.get('CH_DRY') or '')
     if ch_dry:
         logging.info('Dry run mode, no repositories will be removed')
 
     for item in tqdm(list(hf_client.list_datasets(author='CyberHarem'))):
-        if item.id.endswith(ch_game) and hf_fs.exists(f'datasets/{item.id}/.git-empty'):
+        if fnmatch.fnmatch(item.id, ch_pattern) and hf_fs.exists(f'datasets/{item.id}/.git-empty'):
             if ch_dry:
                 logging.info(f'Repository {item.id} will be removed when dry run mode disabled.')
             else:
