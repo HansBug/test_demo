@@ -199,7 +199,8 @@ _ALL_GAMES = [
     # 'lovelivesuperstar',
 
     # 'honkai3',
-    'fireemblem',
+    # 'fireemblem',
+    'granbluefantasy',
 ]
 
 if __name__ == '__main__':
