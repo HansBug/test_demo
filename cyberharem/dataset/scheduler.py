@@ -192,14 +192,15 @@ _ALL_GAMES = [
     # 'theidolmstershinycolors',
     # 'idolmastercinderellagirls',
 
-    'lovelive',
-    'lovelivenijigasakihighschoolidolclub',
-    'loveliveschoolidolfestivalallstars',
-    'lovelivesunshine',
-    'lovelivesuperstar',
+    # 'lovelive',
+    # 'lovelivenijigasakihighschoolidolclub',
+    # 'loveliveschoolidolfestivalallstars',
+    # 'lovelivesunshine',
+    # 'lovelivesuperstar',
 
-    'honkai3',
-    'fireemblem',
+    # 'honkai3',
+    # 'fireemblem',
+    'nikke',
 ]
 
 if __name__ == '__main__':
