@@ -9,7 +9,7 @@ from typing import Optional, Union, List
 from hbutils.system import TemporaryDirectory
 from huggingface_hub import hf_hub_url
 from unidecode import unidecode
-from waifuc.action import CCIPAction, FilterSimilarAction, RandomFilenameAction
+from waifuc.action import CCIPAction, FilterSimilarAction, RandomFilenameAction, TaggingAction
 from waifuc.source import EmptySource, LocalSource
 
 from ..crawler import crawl_dataset_to_huggingface
@@ -18,7 +18,7 @@ from ...utils import download_file, get_hf_fs
 
 def crawl_base_to_huggingface(
         source_repository: str, ch_id: Union[int, List[int]],
-        name: str, repository: Optional[str] = None,
+        name: str, display_name: Optional[str] = None, repository: Optional[str] = None,
         limit: Optional[int] = 1000, min_images: int = 10,
         no_r18: bool = False, bg_color: str = 'white', drop_multi: bool = True,
         repo_type: str = 'dataset', revision: str = 'main', path_in_repo: str = '.',
@@ -36,7 +36,7 @@ def crawl_base_to_huggingface(
     hf_fs = get_hf_fs()
     source_meta_info = json.loads(hf_fs.read_text(f'datasets/{source_repository}/meta.json'))
     bangumi_name = source_meta_info['name']
-    display_name = f'{name} ({bangumi_name})'
+    display_name = display_name or f'{name} ({bangumi_name})'
     with TemporaryDirectory() as td:
         img_cnts = []
         for cid in ch_ids:
@@ -68,6 +68,7 @@ def crawl_base_to_huggingface(
                 source = source.attach(
                     FilterSimilarAction('all'),
                     RandomFilenameAction(ext='.png'),
+                    TaggingAction(force=False, character_threshold=1.01),
                 )
 
         return crawl_dataset_to_huggingface(

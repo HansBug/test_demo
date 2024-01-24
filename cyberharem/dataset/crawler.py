@@ -82,7 +82,9 @@ def get_main_source(source, no_r18: bool = False, bg_color: str = 'white',
             RandomFilenameAction(ext='.png')
         ])
     else:
-        actions = []
+        actions = [
+            TaggingAction(force=False, character_threshold=1.01),
+        ]
 
     return source.attach(*actions)
 
@@ -184,7 +186,7 @@ def crawl_dataset_to_huggingface(
             if not source:
                 raise ValueError(f'Character {origin_source!r} not found.')
 
-        name = name or f'{source.enname} ({source.__official_name__})'
+        name = name or get_ch_name(source)
         display_name = display_name or get_formal_title(source)
 
         if not repository:

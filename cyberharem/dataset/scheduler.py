@@ -164,7 +164,7 @@ class Scheduler:
             if task.character_name and (_repo_exists or new_create_cnt < self.max_new_create):
                 logging.info(f'Scheduling for {task!r} ...')
                 client.create_workflow_run(
-                    'HansBug/test_demo',
+                    'deepghs/cyberharem',
                     'Test Script',
                     data={
                         'character_name': task.character_name,
@@ -181,7 +181,7 @@ class Scheduler:
 
 
 _DEFAULT_CONCURRENCY = 12
-_MAX_NEW_CREATE = 4
+_MAX_NEW_CREATE = 3
 
 _ALL_GAMES = [
     # 'bangdream',
@@ -192,15 +192,14 @@ _ALL_GAMES = [
     # 'theidolmstershinycolors',
     # 'idolmastercinderellagirls',
 
-    # 'lovelive',
-    # 'lovelivenijigasakihighschoolidolclub',
-    # 'loveliveschoolidolfestivalallstars',
-    # 'lovelivesunshine',
-    # 'lovelivesuperstar',
+    'lovelive',
+    'lovelivenijigasakihighschoolidolclub',
+    'loveliveschoolidolfestivalallstars',
+    'lovelivesunshine',
+    'lovelivesuperstar',
 
-    # 'honkai3',
-    # 'fireemblem',
-    'granbluefantasy',
+    'honkai3',
+    'fireemblem',
 ]
 
 if __name__ == '__main__':
